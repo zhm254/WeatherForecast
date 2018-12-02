@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>天气预报</title>
+		<script type="text/javascript">
+			window.onload = function() {
+				var confirm = document.getElementById("confirm");
+				var date = document.getElementById("date");
+				var type = document.getElementById("type");
+				var low = document.getElementById("low");
+				var high = document.getElementById("high");
+				confirm.onclick = function() {
+					var city = document.getElementById("city").value;
+					var xmlhttp;
+					if(window.XMLHttpRequest) {
+						//  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+						xmlhttp = new XMLHttpRequest();
+					} else {
+						// IE6, IE5 浏览器执行代码
+						xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					xmlhttp.onreadystatechange = function() {
+						if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+							var stringResult = xmlhttp.responseText;
+							var objectResult = JSON.parse(stringResult);
+							if(objectResult.msg === "未获取到相关数据!") {
+								alert("请输入合法的国内城市名称。")
+							} else {
+								date.innerHTML = objectResult.data.forecast[1].date;
+								type.innerHTML = objectResult.data.forecast[1].type;
+								low.innerHTML = objectResult.data.forecast[1].low;
+								high.innerHTML = objectResult.data.forecast[1].high;
+							}
+						}
+					}
+					xmlhttp.open("GET", "https://www.apiopen.top/weatherApi?city=" + city, true);
+					xmlhttp.send();
+				}
+			}
+		</script>
+	</head>
+
+	<body>
+		<h4>国内城市次日天气预报查询，请输入想要查询的城市的名称，如：珠海。</h4>
+		<input type="text" id="city" value="" />
+		<input type="button" id="confirm" value="查询" />
+		<br />
+		<br />
+		<div id="date"></div><br />
+		<div id="type"></div><br />
+		<div id="low"></div><br />
+		<div id="high"></div>
+	</body>
+
+</html>
